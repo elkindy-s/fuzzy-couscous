@@ -1,0 +1,110 @@
+#include <iostream>
+
+const float PRODUCT_PRICE = 450.0;
+const int PRODUCT_QUANTITY = 6;
+
+void inputCustomerDetails() {
+    std::cout << "Enter customer name: ";
+    std::string name;
+    std::cin >> name;
+    // Additional code to process customer details if needed
+}
+
+bool checkProductAvailability() {
+    std::cout << "Enter product name: ";
+    std::string productName;
+    std::cin >> productName;
+
+    if (productName != "methane") {
+        return false; // Product is unavailable
+    }
+
+    return true; // Product is available
+}
+
+int enterProductQuantity() {
+    std::cout << "Enter product quantity: ";
+    int quantity;
+    std::cin >> quantity;
+
+    if (quantity > PRODUCT_QUANTITY) {
+        std::cout << "Only " << PRODUCT_QUANTITY << " available." << std::endl;
+        return -1; // Invalid quantity
+    }
+
+    return quantity;
+}
+
+float calculateSubtotal(float price, int quantity) {
+    return price * quantity;
+}
+
+float applyDiscountsOrPromotions(float subtotal, int quantity) {
+    if (quantity > 2) {
+        float discountPerItem = 0.05 * PRODUCT_PRICE;
+        float totalDiscount = discountPerItem * (quantity - 2);
+        return subtotal - totalDiscount;
+    }
+
+    return subtotal;
+}
+
+void selectPaymentMethod() {
+    // Code to select payment method
+}
+
+void processPayment(float total) {
+    // Code to process payment
+}
+
+void printReceipt(float subtotal, float total, int quantity) {
+    std::cout << "----- Receipt -----" << std::endl;
+    std::cout << "Product: Methane" << std::endl;
+    std::cout << "Quantity: " << quantity << std::endl;
+    std::cout << "Subtotal: Ksh " << subtotal << std::endl;
+    std::cout << "Total: Ksh " << total << std::endl;
+    // Additional code to print other receipt details if needed
+}
+
+void updateInventory(int quantity) {
+    // Code to update inventory
+    PRODUCT_QUANTITY -= quantity;
+}
+
+void completeSale() {
+    // Code to complete sale
+}
+
+void displayOutOfStockMessage() {
+    std::cout << "Product out of stock." << std::endl;
+}
+
+void restartOrExit() {
+    // Code to restart or exit
+}
+
+int main() {
+    inputCustomerDetails();
+
+    if (checkProductAvailability()) {
+        int quantity = enterProductQuantity();
+
+        if (quantity != -1) {
+            float subtotal = calculateSubtotal(PRODUCT_PRICE, quantity);
+            float total = applyDiscountsOrPromotions(subtotal, quantity);
+
+            selectPaymentMethod();
+            processPayment(total);
+            printReceipt(subtotal, total, quantity);
+            updateInventory(quantity);
+            completeSale();
+        } else {
+            restartOrExit();
+        }
+    } else {
+        displayOutOfStockMessage();
+        restartOrExit();
+    }
+
+    return 0;
+}
