@@ -3,8 +3,8 @@
 
 const float PARACETAMOL_PRICE = 250.0;
 const float OMEPRAZOLE_PRICE = 350.0;
- int PRODUCT_QUANTITY_PARACETAMOL = 10; // 10 units of Paracetamol available
- int PRODUCT_QUANTITY_OMEPRAZOLE = 5;   // 5 units of Omeprazole available
+int PRODUCT_QUANTITY_PARACETAMOL = 10; // 10 units of Paracetamol available
+int PRODUCT_QUANTITY_OMEPRAZOLE = 5;   // 5 units of Omeprazole available
 
 void inputCustomerDetails() {
     std::cout << "Enter customer name: ";
@@ -43,13 +43,17 @@ float calculateSubtotal(float price, int quantity) {
     return price * quantity;
 }
 
-float applyDiscountsOrPromotions(float subtotal, int quantity) {
+float applyDiscountsOrPromotions(float subtotal, int quantity, std::string productName) {
     if (quantity > 2) {
         float discountPerItem = 0.05 * subtotal;
         float totalDiscount = discountPerItem * (quantity - 2);
+
+        std::cout << "Discount applied for " << productName << ": Ksh " << totalDiscount << std::endl;
+
         return subtotal - totalDiscount;
     }
 
+    std::cout << "No discount applied for " << productName << "." << std::endl;
     return subtotal;
 }
 
@@ -75,7 +79,7 @@ void updateInventory(std::string productName, int quantity) {
 }
 
 void completeSale() {
-    std::cout << "Sale completed." << std::endl;
+    std::cout << "Sale completed. Get well soon!" << std::endl;
 }
 
 void displayOutOfStockMessage() {
@@ -106,7 +110,7 @@ int main() {
             }
 
             subtotal = calculateSubtotal(price, quantity);
-            float total = applyDiscountsOrPromotions(subtotal, quantity);
+            float total = applyDiscountsOrPromotions(subtotal, quantity, productName);
 
             selectPaymentMethod();
             printReceipt(productName, subtotal, total, quantity);
