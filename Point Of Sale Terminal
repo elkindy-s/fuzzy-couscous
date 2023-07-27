@@ -43,29 +43,34 @@ float calculateSubtotal(float price, int quantity) {
     return price * quantity;
 }
 
-float applyDiscountsOrPromotions(float subtotal, int quantity, std::string productName) {
+float applyDiscountsOrPromotions(float price, int quantity, std::string productName) {
     if (quantity > 2) {
-        float discountPerItem = 0.05 * subtotal;
+        float discountPerItem = 0.05 * price;
         float totalDiscount = discountPerItem * (quantity - 2);
 
         std::cout << "Discount applied for " << productName << ": Ksh " << totalDiscount << std::endl;
 
-        return subtotal - totalDiscount;
+        return totalDiscount;
     }
 
     std::cout << "No discount applied for " << productName << "." << std::endl;
-    return subtotal;
+    return 0;
 }
 
 void selectPaymentMethod() {
     std::cout << "Payment Method: Cash" << std::endl;
 }
 
-void printReceipt(std::string productName, float subtotal, float total, int quantity) {
+void printReceipt(std::string productName, float subtotal, float total, float discount, int quantity) {
     std::cout << "----- Receipt -----" << std::endl;
     std::cout << "Product: " << productName << std::endl;
     std::cout << "Quantity: " << quantity << std::endl;
     std::cout << "Subtotal: Ksh " << subtotal << std::endl;
+
+    if (discount > 0) {
+        std::cout << "Discount: Ksh " << discount << std::endl;
+    }
+
     std::cout << "Total: Ksh " << total << std::endl;
     // Additional code to print other receipt details if needed
 }
@@ -101,7 +106,7 @@ int main() {
         int quantity = enterProductQuantity(productName);
 
         if (quantity != -1) {
-            float price, subtotal;
+            float price, subtotal, discount = 0;
 
             if (productName == "Paracetamol") {
                 price = PARACETAMOL_PRICE;
@@ -110,10 +115,11 @@ int main() {
             }
 
             subtotal = calculateSubtotal(price, quantity);
-            float total = applyDiscountsOrPromotions(subtotal, quantity, productName);
+            discount = applyDiscountsOrPromotions(price, quantity, productName);
+            float total = subtotal - discount;
 
             selectPaymentMethod();
-            printReceipt(productName, subtotal, total, quantity);
+            printReceipt(productName, subtotal, total, discount, quantity);
             updateInventory(productName, quantity);
             completeSale();
         } else {
@@ -123,6 +129,10 @@ int main() {
         displayOutOfStockMessage();
         restartOrExit();
     }
+
+    return 0;
+}
+
 
     return 0;
 }
