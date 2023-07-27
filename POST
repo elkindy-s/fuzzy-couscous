@@ -1,7 +1,10 @@
 #include <iostream>
+#include <string>
 
-const float PRODUCT_PRICE = 450.0;
-const int PRODUCT_QUANTITY = 6;
+const float PARACETAMOL_PRICE = 250.0;
+const float OMEPRAZOLE_PRICE = 350.0;
+ int PRODUCT_QUANTITY_PARACETAMOL = 10; // 10 units of Paracetamol available
+ int PRODUCT_QUANTITY_OMEPRAZOLE = 5;   // 5 units of Omeprazole available
 
 void inputCustomerDetails() {
     std::cout << "Enter customer name: ";
@@ -10,25 +13,26 @@ void inputCustomerDetails() {
     // Additional code to process customer details if needed
 }
 
-bool checkProductAvailability() {
-    std::cout << "Enter product name: ";
-    std::string productName;
-    std::cin >> productName;
-
-    if (productName != "methane") {
-        return false; // Product is unavailable
+bool checkProductAvailability(std::string productName) {
+    if (productName == "Paracetamol") {
+        return PRODUCT_QUANTITY_PARACETAMOL > 0;
+    } else if (productName == "Omeprazole") {
+        return PRODUCT_QUANTITY_OMEPRAZOLE > 0;
     }
 
-    return true; // Product is available
+    return false; // Product is unavailable
 }
 
-int enterProductQuantity() {
-    std::cout << "Enter product quantity: ";
+int enterProductQuantity(std::string productName) {
+    std::cout << "Enter product quantity for " << productName << ": ";
     int quantity;
     std::cin >> quantity;
 
-    if (quantity > PRODUCT_QUANTITY) {
-        std::cout << "Only " << PRODUCT_QUANTITY << " available." << std::endl;
+    if (productName == "Paracetamol" && quantity > PRODUCT_QUANTITY_PARACETAMOL) {
+        std::cout << "Only " << PRODUCT_QUANTITY_PARACETAMOL << " units of Paracetamol available." << std::endl;
+        return -1; // Invalid quantity
+    } else if (productName == "Omeprazole" && quantity > PRODUCT_QUANTITY_OMEPRAZOLE) {
+        std::cout << "Only " << PRODUCT_QUANTITY_OMEPRAZOLE << " units of Omeprazole available." << std::endl;
         return -1; // Invalid quantity
     }
 
@@ -41,7 +45,7 @@ float calculateSubtotal(float price, int quantity) {
 
 float applyDiscountsOrPromotions(float subtotal, int quantity) {
     if (quantity > 2) {
-        float discountPerItem = 0.05 * PRODUCT_PRICE;
+        float discountPerItem = 0.05 * subtotal;
         float totalDiscount = discountPerItem * (quantity - 2);
         return subtotal - totalDiscount;
     }
@@ -50,29 +54,28 @@ float applyDiscountsOrPromotions(float subtotal, int quantity) {
 }
 
 void selectPaymentMethod() {
-    // Code to select payment method
+    std::cout << "Payment Method: Cash" << std::endl;
 }
 
-void processPayment(float total) {
-    // Code to process payment
-}
-
-void printReceipt(float subtotal, float total, int quantity) {
+void printReceipt(std::string productName, float subtotal, float total, int quantity) {
     std::cout << "----- Receipt -----" << std::endl;
-    std::cout << "Product: Methane" << std::endl;
+    std::cout << "Product: " << productName << std::endl;
     std::cout << "Quantity: " << quantity << std::endl;
     std::cout << "Subtotal: Ksh " << subtotal << std::endl;
     std::cout << "Total: Ksh " << total << std::endl;
     // Additional code to print other receipt details if needed
 }
 
-void updateInventory(int quantity) {
-    // Code to update inventory
-    PRODUCT_QUANTITY -= quantity;
+void updateInventory(std::string productName, int quantity) {
+    if (productName == "Paracetamol") {
+        PRODUCT_QUANTITY_PARACETAMOL -= quantity;
+    } else if (productName == "Omeprazole") {
+        PRODUCT_QUANTITY_OMEPRAZOLE -= quantity;
+    }
 }
 
 void completeSale() {
-    // Code to complete sale
+    std::cout << "Sale completed." << std::endl;
 }
 
 void displayOutOfStockMessage() {
@@ -86,17 +89,28 @@ void restartOrExit() {
 int main() {
     inputCustomerDetails();
 
-    if (checkProductAvailability()) {
-        int quantity = enterProductQuantity();
+    std::string productName;
+    std::cout << "Enter product name (Paracetamol or Omeprazole): ";
+    std::cin >> productName;
+
+    if (checkProductAvailability(productName)) {
+        int quantity = enterProductQuantity(productName);
 
         if (quantity != -1) {
-            float subtotal = calculateSubtotal(PRODUCT_PRICE, quantity);
+            float price, subtotal;
+
+            if (productName == "Paracetamol") {
+                price = PARACETAMOL_PRICE;
+            } else if (productName == "Omeprazole") {
+                price = OMEPRAZOLE_PRICE;
+            }
+
+            subtotal = calculateSubtotal(price, quantity);
             float total = applyDiscountsOrPromotions(subtotal, quantity);
 
             selectPaymentMethod();
-            processPayment(total);
-            printReceipt(subtotal, total, quantity);
-            updateInventory(quantity);
+            printReceipt(productName, subtotal, total, quantity);
+            updateInventory(productName, quantity);
             completeSale();
         } else {
             restartOrExit();
